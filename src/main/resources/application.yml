@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:${DATABASE_TYPE:postgresql}://${DB_HOST:172.27.38.130}:${DB_PORT:32345}/${DATABASE_NAME:rainbow}?currentSchema=${DB_SCHEMA:rainbow}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:admin123}
+
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    driver-class-name: ${spring.datasource.driver-class-name}
