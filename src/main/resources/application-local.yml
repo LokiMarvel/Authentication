@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:${DATABASE_TYPE:postgresql}://${DB_HOST:172.27.38.130}:${DB_PORT:32345}/${DATABASE_NAME:rainbow}?currentSchema=${DB_SCHEMA:rainbow}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:admin123}
+    url: jdbc:${DATABASE_TYPE:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DATABASE_NAME:ocean}?currentSchema=${DB_SCHEMA:ocean}
+    username: ${DB_USER:sai}
+    password: ${DB_PASSWORD:sai}
 
   sql:
     init:
@@ -17,3 +17,7 @@ spring:
     password: ${spring.datasource.password}
     url: ${spring.datasource.url}
     driver-class-name: ${spring.datasource.driver-class-name}
+
+jwt:
+  secret:
+    key: 743777217A25432A462D4A614E645267556B58703272357538782F413F442847

@@ -1,15 +1,15 @@
 package org.sign.authentication.security;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class User implements UserDetails {
 
 
