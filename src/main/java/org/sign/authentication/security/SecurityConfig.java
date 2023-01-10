@@ -1,28 +1,30 @@
 package org.sign.authentication.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.Collections;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @Slf4j
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+    private final JwtAuthFilter jwtAuthFilter;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,12 +37,16 @@ public class SecurityConfig {
         return http
                 .csrf()
                 .disable()
-                .httpBasic()
-                .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/api/authenticate/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
-                .and().build();
+                .and()
+                .sessionManagement(session -> session.maximumSessions(1).maxSessionsPreventsLogin(true))
+                .authenticationProvider(daoAuthenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -52,6 +58,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    @SneakyThrows
+    public AuthenticationManager getauthenticationManager(AuthenticationConfiguration authenticationConfiguration) {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    /*@Bean
     public ApplicationRunner applicationRunner(UserService service) {
         return args -> {
             User user = new User();
@@ -75,5 +87,5 @@ public class SecurityConfig {
             service.createUser(user);
             log.info(String.format("%s is created successfully.",user.getUsername()));
         };
-    }
+    }*/
 }
